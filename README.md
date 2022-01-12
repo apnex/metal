@@ -1,4 +1,4 @@
-## `terraform-avi`
+## `metal`
 A collection of terraform plans for labs on the `metal.equinix.com` bare-metal IaaS platform  
 Clone repository and adjust parameters as required  
 
