@@ -1,6 +1,6 @@
 ## `metal`
 A collection of terraform plans for labs on the `metal.equinix.com` bare-metal IaaS platform  
-Clone repository and adjust parameters as required  
+Clone repository and adjust input parameters as required  
 
 ---
 
@@ -37,4 +37,6 @@ auth_token = "TRBJAaQtwtuQUbs3GpeSNVs2L2sVCDtV"
 
 Execute the phases one at a time in sequence.  
 
+**NOTE** `phase1` requires that `docker` be installed on the machine that the plan is execute from.  
+`docker` is used to compile the IPXE source code for the `bootiso` module.  
 ---
