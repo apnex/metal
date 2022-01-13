@@ -1,6 +1,6 @@
 #!/bin/bash
 function getThumbprint {
-	local PAYLOAD=$(echo -n | timeout 3 openssl s_client -connect "${ENDPOINT}" 2>/dev/null)
+	local PAYLOAD=$(echo -n | timeout 3 openssl s_client -connect "${ENDPOINT}:${PORT}" 2>/dev/null)
 	local PRINT=$(echo "$PAYLOAD" | openssl x509 -noout -fingerprint -sha256 2>/dev/null)
 	local REGEX='^(.*)=(([0-9A-Fa-f]{2}[:])+([0-9A-Fa-f]{2}))$'
 	if [[ $PRINT =~ $REGEX ]]; then
@@ -17,9 +17,9 @@ if [[ -n $ENDPOINT ]]; then
 		if [[ -n $THUMBPRINT ]]; then
 			ALIVE=1
 		else
-			printf "%s\n" "[ SSL ] ENDPOINT [ $ENDPOINT ] waiting for response.. sleep 10"
+			printf "%s\n" "[ SSL ] ENDPOINT [ $ENDPOINT:$PORT ] waiting for response.. sleep 10"
 			sleep 10
 		fi
 	done
-	printf "%s\n" "[ SSL ] ENDPOINT [ $ENDPOINT ] is ALIVE !!!" 1>&2
+	printf "%s\n" "[ SSL ] ENDPOINT [ $ENDPOINT:$PORT ] is ALIVE !!!" 1>&2
 fi

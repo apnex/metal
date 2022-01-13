@@ -17,9 +17,9 @@ This repo is organised into 3 key phases as follows:
 
 <pre>
 metal
-  &#x2523&#x2501 phase0
-  &#x2523&#x2501 phase1
-  &#x2517&#x2501 phase2
+ &#x2523&#x2501 phase0
+ &#x2523&#x2501 phase1
+ &#x2517&#x2501 phase2
 </pre>
 
 Each phase and directory represents a single atomic terraform plan for lab deployment or configuration.  
@@ -30,14 +30,33 @@ You can obtain an API KEY by performing the following steps in the console:
 - Login to `https://console.equinix.com`  
 - Click your account name in top-right corner and select `Personal API Keys`  
 - Click `+ Add New Key`  
-- Create a new file `/phase0/terraform.tfvars` and enter your new API TOKEN as follows:  
+- Create a new file `/phase0/terraform.tfvars` and enter your new API TOKEN for example:  
 ```
 auth_token = "TRBJAaQtwtuQUbs3GpeSNVs2L2sVCDtV"
 ```
 
 Execute the phases one at a time in sequence.  
 
-`phase1` requires that `docker` be installed on the machine that the plan is execute from.  
-`docker` is used to compile the IPXE source code for the `bootiso` module.  
+---
+#### [`>> phase0 <<`](phase0/README.md)
+Deploys the metal `esx` host and provides management connectivity  
+This will take some time to prepare and install `esx` and start host services  
 
 ---
+
+#### [`>> phase1 <<`](phase1/README.md)
+Configures basic `metal` host networking  
+Deploys a `metal` gateway and public IPv4 management subnet  
+Builds a single linux k8s appliance `controller` VM and attaches it to management subnet  
+
+`phase1` requires that `docker` be installed on the machine that the plan is executed from.  
+`docker` is used to compile the `IPXE` source code for the `bootiso` module.  
+
+The `controller` VM is bootstrapped over a network-boot using the `stage3` approach described here:  
+https://labops.sh  
+
+---
+
+#### [`>> phase2 <<`](phase2/README.md)
+Deploys and configures a DNS service on the `controller` VM  
+Provisions a DNS A Record for `vcenter.lab01.metal` resolving to the next available public IP  

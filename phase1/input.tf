@@ -31,18 +31,10 @@ locals {
 	controller_dns		= "8.8.8.8"
 }
 
-# perform ssl healthcheck
-module "esx-healthcheck" {
-	source		= "./modules/healthcheck-ssl"
-	endpoint	= local.esx_ip
-	port		= 443
-}
-
 ## providers
 provider "vsphere" {
-	vsphere_server		= module.esx-healthcheck.endpoint
+	vsphere_server		= local.esx_ip
 	user			= local.esx_user
 	password		= local.esx_pass
 	allow_unverified_ssl	= true
 }
-

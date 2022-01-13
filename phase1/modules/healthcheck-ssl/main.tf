@@ -20,13 +20,15 @@ locals {
 resource "null_resource" "healthcheck-ssl" {
 	triggers = {
 		always_run	= timestamp()
-		endpoint	= "${local.endpoint}:${local.port}"
+		endpoint	= local.endpoint
+		port		= local.port
 	}
 	provisioner "local-exec" {
 		interpreter	= ["/bin/bash", "-c"]
 		command		= "${path.module}/healthcheck-ssl.sh"
 		environment	= {
 			ENDPOINT	= self.triggers.endpoint
+			PORT		= self.triggers.port
 		}
 	}
 }
@@ -34,7 +36,8 @@ resource "null_resource" "healthcheck-ssl" {
 data "external" "thumbprint" {
 	program	= ["/bin/bash", "-c", "${path.module}/thumbprint.sh"]
 	query	= {
-		endpoint	= "${local.endpoint}:${local.port}"
+		endpoint	= local.endpoint
+		port		= local.port
 	}
 	depends_on = [
 		null_resource.healthcheck-ssl

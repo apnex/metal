@@ -1,9 +1,10 @@
 #!/bin/bash
 read INPUT
 ENDPOINT=$(echo "${INPUT}" | jq -r '.endpoint')
+PORT=$(echo "${INPUT}" | jq -r '.port')
 
 function getThumbprint {
-	local PAYLOAD=$(echo -n | timeout 3 openssl s_client -connect "${ENDPOINT}" 2>/dev/null)
+	local PAYLOAD=$(echo -n | timeout 3 openssl s_client -connect "${ENDPOINT}:${PORT}" 2>/dev/null)
 	local PRINT=$(echo "$PAYLOAD" | openssl x509 -noout -fingerprint -sha256 2>/dev/null)
 	local REGEX='^(.*)=(([0-9A-Fa-f]{2}[:])+([0-9A-Fa-f]{2}))$'
 	if [[ $PRINT =~ $REGEX ]]; then
@@ -19,6 +20,7 @@ if [[ -n $ENDPOINT ]]; then
 	read -r -d '' BODY <<-CONFIG
 	{
 		"endpoint": "${ENDPOINT}",
+		"port": "${PORT}",
 		"thumbprint": "${THUMBPRINT}"
 	}
 	CONFIG
