@@ -37,9 +37,7 @@ auth_token = "TRBJAaQtwtuQUbs3GpeSNVs2L2sVCDtV"
 
 Execute the phases one at a time in sequence.  
 
-**NOTE**
-
-
+*NOTE*  
 `phase1` requires that `docker` be installed on the machine that the plan is execute from.  
 `docker` is used to compile the IPXE source code for the `bootiso` module.  
 ---
