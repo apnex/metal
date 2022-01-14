@@ -42,7 +42,7 @@ The above will deploy a single esx node into a *new* `project` called `labops` i
 ---
 #### `project`
 `project` is the name of a project to deploy the `metal` resources into.  
-This project will be newly created in the metal.equinix console.  
+This project will be newly created in the `metal.equinix` console.  
 It defaults to the name `labops`  
 
 ---
