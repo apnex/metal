@@ -19,7 +19,8 @@ You can obtain an **API KEY** by performing the following steps in the console:
 - Login to [`https://console.equinix.com`](https://console.equinix.com)  
 - Click your account name in top-right corner and select `Personal API Keys`  
 - Click `+ Add New Key`  
-- Enter the key
+- Enter `Description` and ensure permission set to `Read/Write`
+- Click `Add`
 - Copy the key to use as your `auth_token` in the  `/phase0/terraform.tfvars` file
 
 ![metal-api-key](metal-api-key.png)
