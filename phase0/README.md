@@ -38,13 +38,14 @@ hostname          = "core"
 
 The above will deploy a single esx node into a *new* `project` called `labops` in the console  
 
+
 ---
 #### `project`
 `project` is the name of a project to deploy the `metal` resources into.  
-This project will be newly created in the metal.equinix console.
-It defaults to the name `labops`
----
+This project will be newly created in the metal.equinix console.  
+It defaults to the name `labops`  
 
+---
 #### `metro`
 `metro` code refers to the geographical region for server deployment.  
 It defaults to `sy` for the `sydney` region.  
