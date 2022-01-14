@@ -74,7 +74,7 @@ https://metal.equinix.com/developers/docs/servers/server-specs
 ---
 #### `operating_system`
 `operating_system` specifies the operating system to be installed on the metal host.  
-It defaults to the `vmware_esxi_7_0` in this module for ESX.  
+It defaults to `vmware_esxi_7_0` in this module for ESX.  
 
 More information on support operating systems is here:  
 https://metal.equinix.com/developers/docs/operating-systems/licensed  
