@@ -7,7 +7,19 @@ terraform {
 }
 
 ## define variables
-variable "auth_token"	{}
+variable "auth_token"		{}
+variable "metro"		{
+	default = "sy"
+}
+variable "operating_system"	{
+	default = "vmware_esxi_7_0"
+}
+variable "hostname"		{
+	default = "core"
+}
+variable "plan"			{
+	default = "c3.small.x86"
+}
 
 ## input locals
 locals {

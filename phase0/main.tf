@@ -1,6 +1,10 @@
 locals {
-	ssh_user	= "root"
-	ssh_key_name	= "equinix-key"
+	ssh_user		= "root"
+	ssh_key_name		= "equinix-key"
+	metro			= var.metro
+	plan			= var.plan
+	operating_system	= var.operating_system
+	hostname		= var.hostname
 }
 
 ### build project
@@ -34,10 +38,10 @@ resource "local_file" "project_private_key_pem" {
 ## deploy esx node
 resource "metal_device" "esx" {
 	project_id		= metal_project.myproject.id
-	metro			= "sy"
-	plan			= "c3.small.x86"
-	operating_system	= "vmware_esxi_7_0"
-	hostname		= "core"
+	metro			= local.metro
+	plan			= local.plan
+	operating_system	= local.operating_system
+	hostname		= local.hostname
 	billing_cycle		= "hourly"
 	depends_on = [
 		metal_ssh_key.ssh_pub_key
@@ -47,13 +51,13 @@ resource "metal_device" "esx" {
 ### build METAL GATEWAY
 resource "metal_vlan" "external" {
 	description	= "external test VLAN in SY"
-	metro		= "sy"
+	metro		= local.metro
 	project_id	= metal_project.myproject.id
 }
 
 resource "metal_reserved_ip_block" "external" {
 	project_id	= metal_project.myproject.id
-	metro		= "sy"
+	metro		= local.metro
 	type		= "public_ipv4"
 	quantity	= 8
 }
@@ -80,7 +84,7 @@ resource "metal_port" "esx_hosts" {
 }
 
 data "metal_precreated_ip_block" "external" {
-	metro		= "sy"
+	metro		= local.metro
 	project_id	= metal_project.myproject.id
 	address_family	= 4
 	public		= true
