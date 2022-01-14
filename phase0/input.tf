@@ -8,6 +8,9 @@ terraform {
 
 ## define variables
 variable "auth_token"		{}
+variable "project"		{
+	default = "labops"
+}
 variable "metro"		{
 	default = "sy"
 }

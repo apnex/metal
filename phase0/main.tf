@@ -1,6 +1,7 @@
 locals {
 	ssh_user		= "root"
 	ssh_key_name		= "equinix-key"
+	project			= var.project
 	metro			= var.metro
 	plan			= var.plan
 	operating_system	= var.operating_system
@@ -9,7 +10,7 @@ locals {
 
 ### build project
 resource "metal_project" "myproject" {
-	name	= "labops"
+	name	= local.project
 }
 
 ### build SSH key

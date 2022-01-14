@@ -29,13 +29,22 @@ Next, create a new file `/phase0/terraform.tfvars` and populate your variables a
 In this example, `auth_token` is mandatory, all remaining values are optional and show defaults.  
 ```
 auth_token        = "<api-token>"
+project           = "labops"
 metro             = "sy" ## sydney
 plan              = "c3.small.x86"
 operating_system  = "vmware_esxi_7_0"
 hostname          = "core"
 ```
 
+The above will deploy a single esx node into a *new* `project` called `labops` in the console  
+
 ---
+#### `project`
+`project` is the name of a project to deploy the `metal` resources into.  
+This project will be newly created in the metal.equinix console.
+It defaults to the name `labops`
+---
+
 #### `metro`
 `metro` code refers to the geographical region for server deployment.  
 It defaults to `sy` for the `sydney` region.  
@@ -60,6 +69,24 @@ server `plan` defaults to `c3.small.x86` with the following specs:
 Select the server `plan` that best fits your lab requirements (such as nested ESX).  
 Full server `plan` list is here:  
 https://metal.equinix.com/developers/docs/servers/server-specs
+
+---
+#### `operating_system`
+`operating_system` specifies the operating system to be installed on the metal host.  
+It defaults to the `vmware_esxi_7_0` in this module for ESX.  
+
+More information on support operating systems is here:  
+https://metal.equinix.com/developers/docs/operating-systems/licensed  
+
+To find additional values for `operating_system` variable, use the `/operating-systems` API here:  
+https://metal.equinix.com/developers/api/operatingsystems  
+
+Note that different `operating_systems` have minimum supported server `plan` values.  
+
+---
+#### `hostname`
+`hostname` specifies the hostname of the `metal` device.  
+It defaults to `core` for this module.  
 
 ---
 ### `destroy` [optional]
