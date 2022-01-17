@@ -57,7 +57,7 @@ https://labops.sh
 
 Deploys and configures a DNS service on the `controller` VM  
 Provisions a DNS A Record for `vcenter.lab01.metal` resolving to the next available public IP  
----
 
+---
 #### [`>> phase2 <<`](phase2/README.md)
 Deploys and configures a vcenter appliance
