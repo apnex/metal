@@ -25,9 +25,9 @@ metal
 Each phase and directory represents a single atomic terraform plan for lab deployment or configuration.  
 Modify parameters as necessary in each `input.tf` and `apply` or `destroy` as required.
 
-Starting from `phase0` - you will require an active account on [`https://console.equinix.com`](https://console.equinix.com)  
+Starting from `phase0` - you will require an active account on [`https://metal.equinix.com`](https://metal.equinix.com)  
 You can obtain an API KEY by performing the following steps in the console:  
-- Login to [`https://console.equinix.com`](https://console.equinix.com)  
+- Login to [`https://metal.equinix.com`](https://metal.equinix.com)  
 - Click your account name in top-right corner and select `Personal API Keys`  
 - Click `+ Add New Key`  
 - Create a new file `/phase0/terraform.tfvars` and enter your new API KEY for example:  
@@ -55,8 +55,9 @@ Builds a single linux k8s appliance `controller` VM and attaches it to managemen
 The `controller` VM is bootstrapped over a network-boot using the `stage3` approach described here:  
 https://labops.sh  
 
+Deploys and configures a DNS service on the `controller` VM  
+Provisions a DNS A Record for `vcenter.lab01.metal` resolving to the next available public IP  
 ---
 
 #### [`>> phase2 <<`](phase2/README.md)
-Deploys and configures a DNS service on the `controller` VM  
-Provisions a DNS A Record for `vcenter.lab01.metal` resolving to the next available public IP  
+Deploys and configures a vcenter appliance

@@ -14,9 +14,9 @@ terraform apply
 
 ---
 ### `inputs`
-You will require an active account on [`https://console.equinix.com`](https://console.equinix.com)  
+You will require an active account on [`https://metal.equinix.com`](https://metal.equinix.com)  
 You can obtain an **API KEY** by performing the following steps in the console:  
-- Login to [`https://console.equinix.com`](https://console.equinix.com)  
+- Login to [`https://metal.equinix.com`](https://metal.equinix.com)  
 - Click your account name in top-right corner and select `Personal API Keys`  
 - Click `+ Add New Key`  
 - Enter `Description` and ensure permission set to `Read/Write`
@@ -76,7 +76,7 @@ https://metal.equinix.com/developers/docs/servers/server-specs
 `operating_system` specifies the operating system to be installed on the metal host.  
 It defaults to `vmware_esxi_7_0` in this module for ESX.  
 
-More information on support operating systems is here:  
+More information on supported operating systems is here:  
 https://metal.equinix.com/developers/docs/operating-systems/licensed  
 
 To find additional values for `operating_system` variable, use the `/operating-systems` API here:  

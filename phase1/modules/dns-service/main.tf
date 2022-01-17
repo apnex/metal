@@ -34,7 +34,7 @@ resource "null_resource" "dns-service" {
 			done
 			kubectl get pods -A
 			echo "waiting for [ BIND ] to start"
-			sleep 10
+			sleep 20
 		EOT
 		]
 	}

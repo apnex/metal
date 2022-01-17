@@ -5,9 +5,9 @@ set kickstart ${boot}/centos.rke.ks
 
 #static
 ifopen net0
-set net0/ip 136.144.62.106
+set net0/ip 136.144.62.34
 set net0/netmask 255.255.255.248
-set net0/gateway 136.144.62.105
+set net0/gateway 136.144.62.33
 set dns 8.8.8.8
 echo ADDRESS-: ${net0/ip}
 echo NETMASK-: ${net0/netmask}

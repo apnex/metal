@@ -19,6 +19,7 @@ data "terraform_remote_state" "phase0" {
 variable "esx_ip"	{ default = null }
 variable "esx_user"	{ default = null }
 variable "esx_pass"	{ default = null }
+variable "vcenter_ip"	{ default = null }
 
 ## input locals
 locals {
@@ -29,6 +30,7 @@ locals {
 	controller_netmask	= data.terraform_remote_state.phase0.outputs.public_netmask
 	controller_gateway	= data.terraform_remote_state.phase0.outputs.public_gateway
 	controller_dns		= "8.8.8.8"
+	vcenter_ip		= coalesce(var.vcenter_ip, data.terraform_remote_state.phase0.outputs.ip_vcenter)
 }
 
 ## providers
