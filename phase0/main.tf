@@ -89,6 +89,6 @@ module "esx-api-check" {
 	source		= "./modules/healthcheck-ssl"
 	endpoint	=  metal_device.esx.access_public_ipv4
 	depends_on	= [
-		metal.metal_device.esx
+		metal_device.esx
 	]
 }
