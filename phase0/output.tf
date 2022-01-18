@@ -19,9 +19,12 @@ output "public_netmask" {
 output "public_gateway" {
 	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 1)
 }
+output "public_prefix" {
+	value = metal_reserved_ip_block.external.cidr
+}
 output "public_first_ip" {
 	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 2)
 }
-output "ip_vcenter" {
+output "vcenter_ip" {
 	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 3)
 }
