@@ -27,17 +27,12 @@ if [[ -n "${FILE}" && -n "${JSON}" ]]; then
 	VCSADIR="${PWD}/vcsa"
 	echo "ISO: "$FILE
 
-	# check for old directories and remove
-	regex="vcsa"
-	for DIR in ${BASEDIR}/*; do
-		if [[ -d "$DIR" && ! -L "$DIR" ]]; then
-			if [[ $DIR =~ $REGEX ]]; then
-				echo "UMOUNT & DELETE: "$DIR
-				umount $DIR
-				#rm -rf $DIR
-			fi
-		fi
-	done
+	# umount old directory
+	if [[ -d "$VCSADIR" && ! -h "$VCSADIR" ]]; then
+		echo "UMOUNT & DELETE: "$VCSADIR
+		umount $VCSADIR
+		#rm -rf $DIR
+	fi
 
 	# create and mount new directory
 	echo "CREATE & MOUNT: "$VCSADIR $FILE
