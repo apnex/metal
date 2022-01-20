@@ -10,7 +10,7 @@ data "external" "trigger" {
 # dns-service
 resource "null_resource" "dns-service" {
 	triggers = {
-		md5		= data.external.trigger.result["checksum"]
+		#md5		= data.external.trigger.result["checksum"]
 		master_ip	= var.master_ip
 		master_ssh_key	= var.master_ssh_key
 		manifest_src	= "${path.root}/state/${var.manifest}"

@@ -16,27 +16,23 @@ data "terraform_remote_state" "phase0" {
 }
 
 ## define variables
-variable "esx_ip"	{ default = null }
-variable "esx_user"	{ default = null }
-variable "esx_pass"	{ default = null }
 variable "vcenter_ip"	{ default = null }
 
 ## input locals
 locals {
-	esx_ip			= coalesce(var.esx_ip, data.terraform_remote_state.phase0.outputs.host_mgmt_ip)
-	esx_user		= coalesce(var.esx_user, "root")
-	esx_pass		= coalesce(var.esx_pass, data.terraform_remote_state.phase0.outputs.root_password)
-	controller_ip		= data.terraform_remote_state.phase0.outputs.public_first_ip
-	controller_netmask	= data.terraform_remote_state.phase0.outputs.public_netmask
-	controller_gateway	= data.terraform_remote_state.phase0.outputs.public_gateway
-	controller_dns		= "8.8.8.8"
-	vcenter_ip		= coalesce(var.vcenter_ip, data.terraform_remote_state.phase0.outputs.vcenter_ip)
+	network			= data.terraform_remote_state.phase0.outputs.network
+	esx			= data.terraform_remote_state.phase0.outputs.esx
+	controller_ip		= local.network.allocation.controller
+	controller_netmask	= local.network.netmask
+	controller_gateway	= local.network.gateway
+	controller_dns		= local.network.dns
+	vcenter_ip		= coalesce(var.vcenter_ip, local.network.allocation.vcenter)
 }
 
 ## providers
 provider "vsphere" {
-	vsphere_server		= local.esx_ip
-	user			= local.esx_user
-	password		= local.esx_pass
+	vsphere_server		= local.esx.address
+	user			= local.esx.username
+	password		= local.esx.password
 	allow_unverified_ssl	= true
 }
