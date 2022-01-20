@@ -44,7 +44,7 @@ if [[ -n "${FILE}" && -n "${JSON}" ]]; then
 	else
 		$VCSADIR/vcsa-cli-installer/lin64/vcsa-deploy install -v --no-ssl-certificate-verification ${JSON} --accept-eula --precheck-only
 	fi
-	#umount $vcsadir
+	umount $VCSADIR
 else
 	printf "[$(corange "ERROR")]: Usage: $(cgreen "vcenter.create") $(ccyan "<vcsa.iso> <vcsa.json> [ <true> ]")\n" 1>&2
 fi
