@@ -1,8 +1,8 @@
 locals {
-	state		= join("/", [abspath(path.root), "state"])
+	state		= join("/", [path.root, "state"])
 	file		= var.target_file
 	path		= join("/", [local.state, local.file])
-	dockerfile	= "${path.module}/ipxe-builder.docker"
+	dockerfile	= join("/", [path.module, "ipxe-builder.docker"])
 	scriptfile	= var.script_file
 	scriptpath	= join("/", [local.state, local.scriptfile])
 }
@@ -67,4 +67,3 @@ resource "null_resource" "compile-boot-iso" {
 		EOT
 	}
 }
-

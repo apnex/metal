@@ -3,7 +3,7 @@ locals {
 	lab			= "lab01"
 	bootfile_name		= "${local.lab}-${var.bootfile_name}"
 	bootfile_path		= var.bootfile_path
-	private_key		= join("/", [abspath(path.root), "state/${local.lab}-${var.private_key}"])
+	private_key		= join("/", [path.root, "state/${local.lab}-${var.private_key}"])
 	public_key		= "${local.private_key}.pub"
 }
 

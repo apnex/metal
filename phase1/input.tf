@@ -1,6 +1,6 @@
 terraform {
 	backend "local" {
-		path = "./terraform.tfstate"
+		path = "./state/terraform.tfstate"
 	}
 	required_providers {
 		vsphere = ">= 1.15.0"
@@ -11,7 +11,7 @@ terraform {
 data "terraform_remote_state" "phase0" {
 	backend = "local"
 	config = {
-		path = "../phase0/terraform.tfstate"
+		path = "../phase0/state/terraform.tfstate"
 	}
 }
 
@@ -20,8 +20,9 @@ variable "vcenter_ip"	{ default = null }
 
 ## input locals
 locals {
-	network			= data.terraform_remote_state.phase0.outputs.network
-	esx			= data.terraform_remote_state.phase0.outputs.esx
+	phase0			= data.terraform_remote_state.phase0.outputs
+	network			= local.phase0.network
+	esx			= local.phase0.esx
 	controller_ip		= local.network.allocation.controller
 	controller_netmask	= local.network.netmask
 	controller_gateway	= local.network.gateway

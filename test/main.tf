@@ -1,6 +1,6 @@
 terraform {
 	backend "local" {
-		path = "./state/terraform.tfstate"
+		path = "./terraform.tfstate"
 	}
 }
 
@@ -60,5 +60,31 @@ locals {
 			password	: "VMware1!SDDC",
 			domain_name	: "vsphere.local"
 		}
+	}
+}
+
+### TESTING
+resource "null_resource" "scripts" {
+	triggers = {
+		ip	= local.phase1.controller_ip
+		ssh_key	= local.phase1.controller_ssh_key
+		
+	}
+	connection {
+		host		= self.triggers.ip
+		type		= "ssh"
+		user		= "root"
+		private_key     = file(self.triggers.ssh_key)
+	}
+	provisioner "remote-exec" {
+		inline	= [<<-EOT
+			curl -fsSL https://raw.githubusercontent.com/apnex/terraform/master/install.sh | sh
+			mkdir -p metal
+		EOT
+		]
+	}
+	provisioner "file" {
+		source      = "../"
+		destination = "/root/metal/"
 	}
 }
