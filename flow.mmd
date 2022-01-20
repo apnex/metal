@@ -1,0 +1,15 @@
+graph LR;
+ subgraph phase0
+  metal(metal-network)-->esx(esx-host);
+ end
+ subgraph phase1
+  esx-->controller(lab-controller);
+ end
+ subgraph phase2
+ controller-->vcenter(vcenter);
+ vcenter-->config(base-config)
+ end
+ classDef plain fill:#ddd,stroke:#fff,stroke-width:4px,color:#000;
+ classDef k8s fill:#326ce5,stroke:#fff,stroke-width:4px,color:#fff;
+ classDef cluster fill:#fff,stroke:#bbb,stroke-width:2px,color:#326ce5;
+ class metal,esx,controller,vcenter,config k8s;

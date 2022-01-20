@@ -8,6 +8,9 @@ output "controller_ssh_key" {
 output "dns-service-ip" {
 	value = module.dns-service.service-ip
 }
-output "ssh_string" {
+output "dns_test_cmd" {
+	value = "dig @${module.controller.ip} vcenter.lab01.metal"
+}
+output "ssh_cmd" {
 	value = "ssh -o StrictHostKeyChecking=no -i ${module.controller.ssh_key} root@${module.controller.ip}"
 }
