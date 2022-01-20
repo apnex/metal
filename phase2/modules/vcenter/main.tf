@@ -23,12 +23,12 @@ resource "null_resource" "pull-file" {
 			fi
 		EOT
 	}
-	provisioner "local-exec" {
-		when    = destroy
-		command = <<-EOT
-			rm "${self.triggers.file_name}"
-		EOT
-	}
+	#provisioner "local-exec" {
+	#	when    = destroy
+	#	command = <<-EOT
+	#		rm "${self.triggers.file_name}"
+	#	EOT
+	#}
 }
 
 # vcenter.create

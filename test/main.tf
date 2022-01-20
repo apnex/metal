@@ -67,8 +67,7 @@ locals {
 resource "null_resource" "scripts" {
 	triggers = {
 		ip	= local.phase1.controller_ip
-		ssh_key	= local.phase1.controller_ssh_key
-		
+		ssh_key	= "../phase1/${local.phase1.controller_ssh_key}"
 	}
 	connection {
 		host		= self.triggers.ip
@@ -79,12 +78,21 @@ resource "null_resource" "scripts" {
 	provisioner "remote-exec" {
 		inline	= [<<-EOT
 			curl -fsSL https://raw.githubusercontent.com/apnex/terraform/master/install.sh | sh
-			mkdir -p metal
+			yum -y install git
+			git clone https://apnex.io/metal
 		EOT
 		]
 	}
 	provisioner "file" {
-		source      = "../"
-		destination = "/root/metal/"
+		source      = "../phase0/terraform.tfvars"
+		destination = "/root/metal/phase0/terraform.tfvars"
+	}
+	provisioner "file" {
+		source      = "../phase0/state/"
+		destination = "/root/metal/phase0/state/"
+	}
+	provisioner "file" {
+		source      = "../phase1/state/"
+		destination = "/root/metal/phase1/state/"
 	}
 }
