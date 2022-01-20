@@ -1,30 +1,41 @@
 # Outputs
-output "hostname" {
-	value = metal_device.esx.hostname
+locals {
+	esx = {
+		hostname	: metal_device.esx.hostname,
+		address		: metal_device.esx.access_public_ipv4,
+		username	: "root",
+		password	: nonsensitive(metal_device.esx.root_password)
+	}
+	network = {
+		cidr		: metal_reserved_ip_block.external.cidr_notation,
+		prefix		: metal_reserved_ip_block.external.cidr,
+		netmask		: metal_reserved_ip_block.external.netmask,
+		gateway		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 1),
+		dns		: "8.8.8.8",
+		allocation	: {
+			gateway		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 1),
+			controller	: cidrhost(metal_reserved_ip_block.external.cidr_notation, 2),
+			vcenter		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 3),
+			esx01		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 4),
+			esx02		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 5),
+			esx03		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 6)
+		}
+	}
 }
-output "host_internal_ip" {
-	value = metal_device.esx.access_private_ipv4
-}
-output "host_mgmt_ip" {
-	value = metal_device.esx.access_public_ipv4
-}
-output "root_password" {
-	value = nonsensitive(metal_device.esx.root_password)
+output "esx" {
+	value = local.esx
 }
 
-# Network
-output "public_netmask" {
-	value = metal_reserved_ip_block.external.netmask
+output "network" {
+	value = local.network
 }
-output "public_gateway" {
-	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 1)
+
+# render outputs to file
+resource "local_file" "outputs" {
+	filename = "./state/outputs.json"
+	content = jsonencode({
+		esx	: local.esx,
+		network	: local.network
+	})
 }
-output "public_prefix" {
-	value = metal_reserved_ip_block.external.cidr
-}
-output "public_first_ip" {
-	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 2)
-}
-output "vcenter_ip" {
-	value = cidrhost(metal_reserved_ip_block.external.cidr_notation, 3)
-}
+
