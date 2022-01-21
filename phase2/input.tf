@@ -56,7 +56,7 @@ locals {
 		},
 		os: {
 			password	: "VMware1!SDDC",
-			ntp_servers	: "time.google.com",
+			ntp_servers	: "216.239.35.12",
 			ssh_enable	: true
 		},
 		sso: {
