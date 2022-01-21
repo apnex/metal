@@ -6,6 +6,7 @@ locals {
 	not_dry_run	= "false"
 }
 
+## render vcsa.json
 resource "local_file" "vcsa-json" {
 	filename	= local.vcenter_json
 	content		= jsonencode({
@@ -25,15 +26,23 @@ resource "local_file" "vcsa-json" {
 	})
 }
 
+## load vcsa.json
+data "local_file" "vcsa_json" {
+	filename	= local.vcenter_json
+	depends_on	= [
+		local_file.vcsa-json
+	]
+}
+
 # install vcenter
 module "vcenter" {
-	source			= "./modules/vcenter"
-	prefix			= local.prefix
-	vcenter_url		= local.vcenter_url
-	vcenter_file		= local.vcenter_file
-	vcenter_json		= local.vcenter_json
-	not_dry_run		= local.not_dry_run
-	depends_on = [
+	source		= "./modules/vcenter"
+	prefix		= local.prefix
+	vcenter_url	= local.vcenter_url
+	vcenter_file	= local.vcenter_file
+	vcenter_json	= local.vcenter_json
+	not_dry_run	= local.not_dry_run
+	depends_on	= [
 		local_file.vcsa-json
 	]
 }
