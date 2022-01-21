@@ -21,7 +21,10 @@ data "terraform_remote_state" "phase1" {
 }
 
 variable "vcenter_url" {
-	default		= "http://iso.apnex.io/VMware-VCSA-all-7.0.3-18778458.iso"
+	default	= "http://iso.apnex.io/VMware-VCSA-all-7.0.3-18778458.iso"
+}
+variable "not_dry_run" {
+	default	= "true"
 }
 
 locals {

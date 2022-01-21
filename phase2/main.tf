@@ -3,20 +3,20 @@ locals {
 	vcenter_url	= var.vcenter_url
 	vcenter_file	= "vcenter.iso"
 	vcenter_json	= "${path.root}/state/vcsa.json"
-	not_dry_run	= "false"
+	not_dry_run	= var.not_dry_run
 }
 
 ## render vcsa.json
 resource "local_file" "vcsa-json" {
 	filename	= local.vcenter_json
 	content		= jsonencode({
-		"__version": "2.13.0",
-		"new_vcsa": {
-			"esxi": local.esx,
-			"appliance": local.vcsa.appliance,
-			"network": local.vcsa.network,
-			"os": local.vcsa.os,
-			"sso": local.vcsa.sso
+		"__version"	: "2.13.0",
+		"new_vcsa"	: {
+			"esxi"		: local.esx,
+			"appliance"	: local.vcsa.appliance,
+			"network"	: local.vcsa.network,
+			"os"		: local.vcsa.os,
+			"sso"		: local.vcsa.sso
 		},
 		"ceip": {
 			"settings": {
