@@ -20,11 +20,8 @@ data "terraform_remote_state" "phase1" {
 	}
 }
 
-variable "vcenter_url" {
-	default	= "http://iso.apnex.io/VMware-VCSA-all-7.0.3-18778458.iso"
-}
-variable "not_dry_run" {
-	default	= "true"
+variable "vcsa_url" {
+	default	= "https://iso.apnex.io/VMware-vCenter-Server-Appliance-7.0.3.00100-18778458_OVF10.ova"
 }
 
 locals {
@@ -56,7 +53,7 @@ locals {
 		},
 		os: {
 			password	: "VMware1!SDDC",
-			ntp_servers	: "216.239.35.12",
+			ntp_servers	: "time.google.com",
 			ssh_enable	: true
 		},
 		sso: {
