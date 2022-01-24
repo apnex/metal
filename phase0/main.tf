@@ -9,7 +9,7 @@ locals {
 }
 
 ### build project
-resource "metal_project" "myproject" {
+data "metal_project" "myproject" {
 	name	= local.project
 }
 
@@ -17,18 +17,18 @@ resource "metal_project" "myproject" {
 resource "metal_vlan" "external" {
 	description	= "external public VLAN"
 	metro		= local.metro
-	project_id	= metal_project.myproject.id
+	project_id	= data.metal_project.myproject.id
 }
 
 resource "metal_reserved_ip_block" "external" {
-	project_id	= metal_project.myproject.id
+	project_id	= data.metal_project.myproject.id
 	metro		= local.metro
 	type		= "public_ipv4"
 	quantity	= 8
 }
 
 resource "metal_gateway" "gateway" {
-	project_id		= metal_project.myproject.id
+	project_id		= data.metal_project.myproject.id
 	vlan_id			= metal_vlan.external.id
 	ip_reservation_id	= metal_reserved_ip_block.external.id
 }
@@ -43,7 +43,7 @@ resource "metal_ssh_key" "ssh_pub_key" {
 	name       = local.ssh_key_name
 	public_key = chomp(tls_private_key.ssh_key_pair.public_key_openssh)
 	depends_on = [
-		metal_project.myproject
+		data.metal_project.myproject
 	]
 }
 
@@ -58,7 +58,7 @@ resource "local_file" "project_private_key_pem" {
 
 ## deploy esx node
 resource "metal_device" "esx" {
-	project_id		= metal_project.myproject.id
+	project_id		= data.metal_project.myproject.id
 	metro			= local.metro
 	plan			= local.plan
 	operating_system	= local.operating_system
