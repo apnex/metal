@@ -20,11 +20,14 @@ resource "local_file" "vcsa_json" {
 	})
 }
 
-resource "null_resource" "import-ova" {
+resource "null_resource" "vcsa-deploy" {
 	triggers = {
-		always_run	= timestamp()
 		vcsa_url	= local.vcsa_url
 		vcsa_name	= local.vcsa.appliance.name
+		vcsa_ip		= local.vcsa.network.ip
+		vcsa_username	= "root"
+		vcsa_password	= local.vcsa.sso.password
+		vcsa_json	= abspath(local.vcsa_json)
 		govc_url	= local.esx.hostname
 		govc_username	= local.esx.username
 		govc_password	= local.esx.password
@@ -35,25 +38,16 @@ resource "null_resource" "import-ova" {
 		environment	= {
 			VCSA_URL	= self.triggers.vcsa_url
 			VCSA_NAME	= self.triggers.vcsa_name
+			VCSA_IP		= self.triggers.vcsa_ip
+			VCSA_USERNAME	= self.triggers.vcsa_username
+			VCSA_PASSWORD	= self.triggers.vcsa_password
+			VCSA_JSON	= self.triggers.vcsa_json
 			GOVC_URL	= self.triggers.govc_url
 			GOVC_USERNAME	= self.triggers.govc_username
 			GOVC_PASSWORD	= self.triggers.govc_password
 			GOVC_INSECURE	= self.triggers.govc_insecure
 		}
-		command		= <<-EOT
-			## set docker cmd
-			GOVC="docker run --rm -t"
-			GOVC+=" -e GOVC_URL"
-			GOVC+=" -e GOVC_USERNAME"
-			GOVC+=" -e GOVC_PASSWORD"
-			GOVC+=" -e GOVC_INSECURE"
-			GOVC+=" -v $PWD/state/vcsa.json:/iso/vcsa.json"
-			GOVC+=" vmware/govc /govc"
-			## import
-			$GOVC import.ova --options=/iso/vcsa.json $VCSA_URL
-			$GOVC vm.change -vm $VCSA_NAME -g vmwarePhoton64Guest
-			$GOVC vm.power -on $VCSA_NAME
-		EOT
+		command		= "${path.root}/vcsa-deploy.sh"
 	}
 	depends_on = [
 		local_file.vcsa_json
