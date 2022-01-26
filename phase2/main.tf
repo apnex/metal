@@ -20,6 +20,7 @@ resource "local_file" "vcsa_json" {
 	})
 }
 
+# connect to controller and stream/configure vcsa
 resource "null_resource" "vcsa-deploy" {
 	triggers = {
 		vcsa_url	= local.vcsa_url
@@ -33,23 +34,36 @@ resource "null_resource" "vcsa-deploy" {
 		govc_password	= local.esx.password
 		govc_insecure	= "true"
 	}
-	provisioner "local-exec" {
-		interpreter	= ["/bin/bash", "-c"]
-		environment	= {
+	connection {
+		host		= local.phase1.controller_ip
+		type		= "ssh"
+		user		= "root"
+		private_key     = file("../phase1/${local.phase1.controller_ssh_key}")
+	}
+	provisioner "file" {
+		source		= self.triggers.vcsa_json
+		destination	= "/root/vcsa.json"
+	}
+	provisioner "file" {
+		content		= templatefile("./tpl/vcsa-deploy.sh.tpl", {
 			VCSA_URL	= self.triggers.vcsa_url
 			VCSA_NAME	= self.triggers.vcsa_name
 			VCSA_IP		= self.triggers.vcsa_ip
 			VCSA_USERNAME	= self.triggers.vcsa_username
 			VCSA_PASSWORD	= self.triggers.vcsa_password
-			VCSA_JSON	= self.triggers.vcsa_json
+			VCSA_JSON	= "/root/vcsa.json"
 			GOVC_URL	= self.triggers.govc_url
 			GOVC_USERNAME	= self.triggers.govc_username
 			GOVC_PASSWORD	= self.triggers.govc_password
 			GOVC_INSECURE	= self.triggers.govc_insecure
-		}
-		command		= "${path.root}/vcsa-deploy.sh"
+		})
+		destination	= "/root/vcsa-deploy.sh"
 	}
-	depends_on = [
-		local_file.vcsa_json
-	]
+	provisioner "remote-exec" {
+		inline = [<<-EOT
+			chmod +x ./vcsa-deploy.sh
+			./vcsa-deploy.sh
+		EOT
+		]
+	}
 }

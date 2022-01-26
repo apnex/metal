@@ -10,6 +10,10 @@ output "vcenter_name" {
 	value = local.vcsa.appliance.name
 }
 
+output "vcenter_url" {
+	value = "https://${local.vcsa.appliance.name}"
+}
+
 output "vcenter_ip" {
 	value = local.vcsa.network.ip
 }
