@@ -31,7 +31,7 @@ resource "null_resource" "scripts" {
 		destination = "/root/metal/phase1/state/"
 	}
 	depends_on = [
-		 dns_a_record_set.www
+		 dns_a_record_set.vcenter
 	]
 }
 

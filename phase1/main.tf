@@ -116,11 +116,24 @@ provider "dns" {
 }
 
 # create vcenter A record
-resource "dns_a_record_set" "www" {
+resource "dns_a_record_set" "vcenter" {
 	zone = "lab01.metal."
 	name = "vcenter"
 	addresses = [
 		local.vcenter_ip
+	]
+	ttl = 300
+	depends_on = [
+		module.dns-service
+	]
+}
+
+# create host A record
+resource "dns_a_record_set" "core" {
+	zone = "lab01.metal."
+	name = "core"
+	addresses = [
+		local.esx.address
 	]
 	ttl = 300
 	depends_on = [
