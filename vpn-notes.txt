@@ -1,0 +1,13 @@
+## reference
+https://medium.com/@gurayy/set-up-a-vpn-server-with-docker-in-5-minutes-a66184882c45
+
+## build
+git clone https://github.com/kylemanna/docker-openvpn.git	
+docker build -t apnex/control-vpn .
+
+## start
+docker run -v $PWD/vpn-data:/etc/openvpn --rm myownvpn ovpn_genconfig -u udp://136.144.62.122:1194
+docker run -v $PWD/vpn-data:/etc/openvpn --rm -it myownvpn ovpn_initpki nopass
+docker run -v $PWD/vpn-data:/etc/openvpn -d --cap-add=NET_ADMIN --net=host myownvpn
+docker run -v $PWD/vpn-data:/etc/openvpn --rm -it myownvpn easyrsa build-client-full user1 nopass
+docker run -v $PWD/vpn-data:/etc/openvpn --rm myownvpn ovpn_getclient user1 > user1.ovpn
