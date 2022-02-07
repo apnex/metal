@@ -22,3 +22,14 @@ module "vpn-service" {
 		local_file.vpn-service-yaml
 	]
 }
+
+# create vpn-service-user
+module "vpn-user-1" {
+	source			= "./modules/vpn-service-user"
+	master_ip		= local.master_ip
+	master_ssh_key		= local.master_key
+	username		= "user1"
+	depends_on = [
+		module.vpn-service
+	]
+}
