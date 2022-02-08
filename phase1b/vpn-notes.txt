@@ -11,3 +11,6 @@ docker run -v $PWD/vpn-data:/etc/openvpn --rm -it myownvpn ovpn_initpki nopass
 docker run -v $PWD/vpn-data:/etc/openvpn -d --cap-add=NET_ADMIN --net=host myownvpn
 docker run -v $PWD/vpn-data:/etc/openvpn --rm -it myownvpn easyrsa build-client-full user1 nopass
 docker run -v $PWD/vpn-data:/etc/openvpn --rm myownvpn ovpn_getclient user1 > user1.ovpn
+
+# example customisation - refer https://heavymetaldev.com/openvpn-with-docker
+#> docker-compose run --rm openvpn ovpn_genconfig -N -d -n 192.168.13.6 -u udp://vpn.mycompany.net -p "dhcp-option DOMAIN mycompany.net" -p "route 192.168.13.0 255.255.255.0" -p "route 172.17.0.0 255.255.0.0"

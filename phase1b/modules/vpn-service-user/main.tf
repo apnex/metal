@@ -1,10 +1,14 @@
+locals {
+	filepath	= "${path.root}/state/${var.username}.ovpn"
+}
+
 # vpn-service-user
 resource "null_resource" "vpn-service-user" {
 	triggers = {
 		master_ip	= var.master_ip
 		master_ssh_key	= var.master_ssh_key
 		username	= var.username
-		filepath	= "${path.root}/state/${var.username}.ovpn"
+		filepath	= local.filepath
 	}
 	connection {
 		host		= self.triggers.master_ip
