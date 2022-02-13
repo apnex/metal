@@ -1,0 +1,99 @@
+## documentation
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/
+
+## create cloud project
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/cloud-project-quickstart
+
+## create a new project `anthos-lab`
+PROJECT_ID="anthos-lab-339504"
+gcloud config set project ${PROJECT_ID}
+
+# enable services / APIs
+gcloud services enable \
+	anthos.googleapis.com \
+	anthosgke.googleapis.com \
+	anthosaudit.googleapis.com \
+	cloudresourcemanager.googleapis.com \
+	container.googleapis.com \
+	gkeconnect.googleapis.com \
+	gkehub.googleapis.com \
+	serviceusage.googleapis.com \
+	stackdriver.googleapis.com \
+	monitoring.googleapis.com \
+	logging.googleapis.com
+
+# create service accounts
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/service-account-quickstart
+
+gcloud iam service-accounts create component-access-sa \
+	--display-name "Component Access Service Account" \
+	--project ${PROJECT_ID}
+
+gcloud iam service-accounts keys create component-access-key.json \
+	--iam-account component-access-sa@${PROJECT_ID}.iam.gserviceaccount.com
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member "serviceAccount:component-access-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
+    --role "roles/serviceusage.serviceUsageViewer"
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member "serviceAccount:component-access-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
+    --role "roles/iam.roleViewer"
+
+## get vCenter CA cert
+# https://datacenterrookie.wordpress.com/2019/08/13/installing-google-kubernetes-engine-gke-on-prem-on-vmware-vsan/
+# echo quit | openssl s_client -showcerts -servername [vCenter-IP] -connect [vCenter-IP]:443 > vcenter-cert.pem
+./get.cert.sh > vcenter.pem
+
+## anthos downloads
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/downloads
+gsutil cp gs://gke-on-prem-release/gkeadm/1.10.1-gke.19/linux/gkeadm ./
+chmod +x gkeadm
+
+## create admin workstation
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/admin-workstation-quickstart
+
+## create gkeadm files
+
+## modify config file
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/admin-workstation-configuration-file
+
+## create admin workstation
+./gkeadm create admin-workstation --auto-create-service-accounts
+
+## prepare for LB
+#https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/setup-load-balance
+
+## Using MetalLB
+#https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/bundled-load-balance-metallb
+
+## create admin cluster
+#https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/admin-cluster-quickstart
+
+## configure ipblock.yaml
+nano admin-cluster-ipblock.yaml
+
+## example - thinks it needs 5 IPs
+blocks:
+  - netmask: 255.255.255.248
+    gateway: 136.144.62.113
+    ips:
+    - ip: 136.144.62.117
+      hostname: admin-host1
+    - ip: 136.144.62.118
+      hostname: admin-host2
+
+## admin custer configuration
+# https://cloud.google.com/anthos/clusters/docs/on-prem/1.10/how-to/admin-cluster-configuration-file
+
+## check config
+gkectl check-config --config admin-cluster.yaml
+
+## prepare cluster
+gkectl prepare --config admin-cluster.yaml --skip-validation-all
+
+## create admin cluster
+gkectl create admin --config admin-cluster.yaml
+
+## verify admin cluster
+kubectl get nodes --kubeconfig kubeconfig

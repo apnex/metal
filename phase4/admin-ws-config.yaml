@@ -1,0 +1,32 @@
+gcp:
+  componentAccessServiceAccountKeyPath: "component-access-key.json"
+vCenter:
+  credentials:
+    address: "vcenter.lab01.metal"
+    fileRef:
+      path: "credential.yaml"
+      entry: vCenter
+  datacenter: "core"
+  datastore: "datastore1"
+  cluster: "core"
+  network: "external"
+  folder: ""
+  resourcePool: "core/Resources"
+  caCertPath: "./vcenter.pem"
+proxyUrl: ""
+adminWorkstation:
+  name: "gke-admin-ws"
+  cpus: 4
+  memoryMB: 4096
+  diskGB: 50
+  dataDiskName: gke-on-prem-admin-workstation-data-disk/gke-admin-ws-data-disk.vmdk
+  dataDiskMB: 512
+  network:
+    ipAllocationMode: "static"
+    hostConfig:
+      ip: "136.144.62.164"
+      gateway: "136.144.62.161"
+      netmask: "255.255.255.240"
+      dns:
+      - "136.144.62.162"
+  ntpServer: ntp.ubuntu.com

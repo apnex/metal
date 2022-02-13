@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: AdminCluster
+name: "admin-cluster"
+bundlePath: /var/lib/gke/bundles/gke-onprem-vsphere-1.10.0-gke.194-full.tgz
+vCenter:
+  address: vcenter.lab01.metal
+  datacenter: core
+  cluster: core
+  resourcePool: core/Resources
+  datastore: datastore1
+  caCertPath: vcenter.pem
+  credentials:
+    fileRef:
+      path: credential.yaml
+      entry: vCenter
+  folder: ""
+  dataDisk: "my-disk.vmdk"
+network:
+  ipMode:
+    type: static
+    ipBlockFilePath: "admin-cluster-ipblock.yaml"
+  serviceCIDR: 10.96.232.0/24
+  podCIDR: 192.168.0.0/16
+  vCenter:
+    networkName: external
+loadBalancer:
+  kind: "MetalLB"
+  vips:
+    controlPlaneVIP: "136.144.62.118"
+antiAffinityGroups:
+  enabled: false
+adminMaster:
+  cpus: 2
+  memoryMB: 4096
+connectivity: connected
+componentAccessServiceAccountKeyPath: "component-access-key.json"
+
+# (Optional/Preview) Specify which GCP project to connect your GKE clusters to
+#gkeConnect:
+#  projectID: "my-connect-project-123"
+#  registerServiceAccountKeyPath: "my-key-folder/connect-register-key.json"
+
+# required
+stackdriver:
+  projectID: anthos-lab-339504
+  clusterLocation: us-central1
+  enableVPC: false
+  serviceAccountKeyPath: log-mon-sa-2202101409.json
+  disableVsphereResourceMetrics: false
+autoRepair:
+  enabled: false

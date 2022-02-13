@@ -16,9 +16,10 @@ locals {
 			gateway		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 1),
 			controller	: cidrhost(metal_reserved_ip_block.external.cidr_notation, 2),
 			vcenter		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 3),
-			esx01		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 4),
-			esx02		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 5),
-			esx03		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 6)
+			adminws		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 4),
+			admin01		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 5),
+			admin02		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 6),
+			admin03		: cidrhost(metal_reserved_ip_block.external.cidr_notation, 7)
 		}
 	}
 }

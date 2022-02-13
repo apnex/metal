@@ -13,20 +13,12 @@ data "vsphere_host" "esx" {
 	datacenter_id = data.vsphere_datacenter.datacenter.id
 }
 
-## create new vSwitch1
-resource "vsphere_host_virtual_switch" "switch" {
-	name           = "vSwitch1"
-	host_system_id = data.vsphere_host.esx.id
-	network_adapters = ["vmnic3"]
-	active_nics  = ["vmnic3"]
-	standby_nics = []
-}
-
 ## create portgroup 'external'
 resource "vsphere_host_port_group" "external" {
-	name                = "external"
-	host_system_id      = data.vsphere_host.esx.id
-	virtual_switch_name = vsphere_host_virtual_switch.switch.name
+	name			= "external"
+	host_system_id		= data.vsphere_host.esx.id
+	virtual_switch_name	= "vSwitch0"
+	vlan_id			= 1000
 }
 
 # render ipxe script

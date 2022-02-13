@@ -67,3 +67,23 @@ resource "vsphere_distributed_virtual_switch" "dvs" {
 		}
 	}
 }
+
+# create portgroup pg-mgmt
+resource "vsphere_distributed_port_group" "pg-mgmt" {
+	name				= "pg-mgmt"
+	distributed_virtual_switch_uuid	= vsphere_distributed_virtual_switch.dvs.id
+	allow_forged_transmits		= true
+	allow_mac_changes		= true
+	allow_promiscuous		= false
+	vlan_id				= 10
+}
+
+# create portgroup pg-node
+resource "vsphere_distributed_port_group" "pg-node" {
+	name				= "pg-node"
+	distributed_virtual_switch_uuid	= vsphere_distributed_virtual_switch.dvs.id
+	allow_forged_transmits		= true
+	allow_mac_changes		= true
+	allow_promiscuous		= false
+	vlan_id				= 20
+}
