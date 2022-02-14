@@ -5,7 +5,7 @@ output "controller_ip" {
 output "controller_ssh_key" {
 	value = module.controller.ssh_key
 }
-output "dns-service-ip" {
+output "dns_service_ip" {
 	value = module.dns-service.service-ip
 }
 output "dns_test_cmd" {

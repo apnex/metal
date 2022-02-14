@@ -14,7 +14,7 @@ spec:
       volumes:
         - name: vpn-data
           persistentVolumeClaim:
-            claimName: vpn-pv-claim
+            claimName: pvc-vpn-data
         - name: vpn-init
           configMap:
             defaultMode: 0777
@@ -51,29 +51,13 @@ data:
     ovpn_run
 ---
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: vpn-pv
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 100Mi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  hostPath:
-    path: "/mnt/vpn"
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: vpn-pv-claim
+  name: pvc-vpn-data
 spec:
-  storageClassName: manual
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 10Mi
