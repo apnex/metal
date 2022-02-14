@@ -13,9 +13,8 @@ spec:
     spec:
       volumes:
         - name: vpn-data
-          hostPath:
-            path: /var/vpn
-            type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: vpn-pv-claim
         - name: vpn-init
           configMap:
             defaultMode: 0777
@@ -43,7 +42,7 @@ data:
   vpn-init.sh: |
     #!/bin/sh
     echo "Initialising VPN configuration..."
-    ovpn_genconfig -u udp://${VPN_ENDPOINT}:1194
+    ovpn_genconfig -N -d -n ${DNS_ENDPOINT} -u udp://${VPN_ENDPOINT}:1194
     if [[ -d "/etc/openvpn/pki" ]]; then
     	echo "[ /etc/openvpn/pki ] already initialised"
     else
@@ -51,3 +50,30 @@ data:
     fi
     ovpn_run
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vpn-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/mnt/vpn"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vpn-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

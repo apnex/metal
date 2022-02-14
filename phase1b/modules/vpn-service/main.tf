@@ -19,18 +19,40 @@ resource "null_resource" "vpn-service" {
 	provisioner "remote-exec" {
 		inline	= [<<-EOT
 			kubectl apply -f "${self.triggers.manifest_dst}"
+			## check if deployment ready
 			ALIVE=0
 			DEPLOYMENT="control-vpn"
 			while [[ $ALIVE == 0 ]]; do
-				if [[ $(kubectl get deployments $DEPLOYMENT -o json | jq -r '.status.conditions[] | select(.reason=="MinimumReplicasAvailable") | .status') == "True" ]]; then
+				TEST=$(kubectl get deployments $DEPLOYMENT -o json | jq -r '.status.conditions[] | select(.reason=="MinimumReplicasAvailable") | .status')
+				if [[ $TEST == "True" ]]; then
 					ALIVE=1
-					echo "Success - deployment [ $DEPLOYMENT ] is alive!"
+					echo "Success: deployment [ $DEPLOYMENT ] is ALIVE!"
+				else
+					echo "Waiting for deployment [ $DEPLOYMENT ] to be ready"
+					sleep 5;
 				fi
-				echo "Waiting for deployment [ $DEPLOYMENT ] to be ready"
-				sleep 3;
 			done
 			kubectl get pods -A
-			echo "Waiting for [ VPN-SERVICE ] to start"
+
+			## get POD from deployment
+			SELECTOR="name=control-vpn-deploy"
+			POD=$(kubectl get pods --selector=$SELECTOR -o json | jq -r '.items[0] | .metadata.name')
+			echo "POD [ $POD ]"
+
+			## check if VPN service initialised
+			ALIVE=0
+			DEPLOYMENT="control-vpn"
+			while [[ $ALIVE == 0 ]]; do
+				TEST=$((kubectl exec -it $POD -- test -f /etc/openvpn/pki/ta.key 2>/dev/null) && echo 0 || echo 1)
+				if [[ $TEST -eq 0 ]]; then
+					ALIVE=1
+					echo "Success: service [ VPN-SERVICE ] is ALIVE!"
+				else
+					echo "Waiting for [ VPN-SERVICE ] to start ..."
+					sleep 10;
+				fi
+			done
+			echo "Service [ VPN-SERVICE ] started"
 			sleep 5
 		EOT
 		]

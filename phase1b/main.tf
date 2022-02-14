@@ -2,6 +2,7 @@
 locals {
 	master_ip	= local.phase1.controller_ip
 	master_key	= "../phase1/${local.phase1.controller_ssh_key}"
+	dns_service_ip	= local.phase1.dns_service_ip
 }
 
 # render dns service yaml
@@ -9,6 +10,7 @@ resource "local_file" "vpn-service-yaml" {
 	filename = "./state/vpn-service.yaml"
 	content = templatefile("./tpl/vpn-service.yaml.tpl", {
 		VPN_ENDPOINT = local.master_ip
+		DNS_ENDPOINT = local.dns_service_ip
 	})
 }
 
