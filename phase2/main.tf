@@ -21,8 +21,12 @@ resource "local_file" "vcsa_json" {
 }
 
 # connect to controller and stream/configure vcsa
-resource "null_resource" "vcsa-deploy" {
+resource "null_resource" "vcenter-appliance" {
 	triggers = {
+		conn_host	= local.phase1.controller_ip
+		conn_type	= "ssh"
+		conn_user	= "root"
+		conn_key	= "../phase1/${local.phase1.controller_ssh_key}"
 		vcsa_url	= local.vcsa_url
 		vcsa_name	= local.vcsa.appliance.name
 		vcsa_ip		= local.vcsa.network.ip
@@ -35,10 +39,10 @@ resource "null_resource" "vcsa-deploy" {
 		govc_insecure	= "true"
 	}
 	connection {
-		host		= local.phase1.controller_ip
-		type		= "ssh"
-		user		= "root"
-		private_key     = file("../phase1/${local.phase1.controller_ssh_key}")
+		host		= self.triggers.conn_host
+		type		= self.triggers.conn_type
+		user		= self.triggers.conn_user
+		private_key     = file(self.triggers.conn_key)
 	}
 	provisioner "file" {
 		source		= self.triggers.vcsa_json
@@ -59,10 +63,28 @@ resource "null_resource" "vcsa-deploy" {
 		})
 		destination	= "/root/vcsa-deploy.sh"
 	}
+	provisioner "file" {
+		content		= templatefile("./tpl/vcsa-remove.sh.tpl", {
+			VCSA_NAME	= self.triggers.vcsa_name
+			GOVC_URL	= self.triggers.govc_url
+			GOVC_USERNAME	= self.triggers.govc_username
+			GOVC_PASSWORD	= self.triggers.govc_password
+			GOVC_INSECURE	= self.triggers.govc_insecure
+		})
+		destination	= "/root/vcsa-remove.sh"
+	}
 	provisioner "remote-exec" {
-		inline = [<<-EOT
+		inline	= [<<-EOT
 			chmod +x ./vcsa-deploy.sh
 			./vcsa-deploy.sh
+		EOT
+		]
+	}
+	provisioner "remote-exec" {
+		when	= destroy
+		inline	= [<<-EOT
+			chmod +x ./vcsa-remove.sh
+			./vcsa-remove.sh
 		EOT
 		]
 	}
