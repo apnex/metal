@@ -47,7 +47,7 @@ locals {
 			prefix		: tostring(local.phase0.network.prefix),
 			gateway		: local.phase0.network.gateway,
 			dns_servers	: [
-				local.phase1.dns-service-ip
+				local.phase1.dns_service_ip
 			],
 			system_name	: "vcenter.lab01.metal"
 		},
